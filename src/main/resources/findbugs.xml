@@ -9,5 +9,23 @@
 
         <Detector class="com.github.spotbugs.MavenTestClassNameDetector" reports="TEST_CLASS_NAME_NOT_DEFAULT" speed="fast" />
 
+        <Detector class="com.github.spotbugs.JUnitMissingFailDetector" reports="TEST_MISSING_FAIL" speed="fast" />
+
+        <Detector class="com.github.spotbugs.JUnitMissingJoinDetector" reports="TEST_MISSING_JOIN" speed="fast" />
+
+        <Detector class="com.github.spotbugs.DatabaseDropMissingDetector" reports="TEST_MISSING_DROP" speed="fast" />
+
+        <Detector class="com.github.spotbugs.JUnitUnexpectedThrowDetector" reports="TEST_UNEXPECTED_THROW" speed="fast" />
+
         <BugPattern abbrev="TEST" type="TEST_CLASS_NAME_NOT_DEFAULT" category="CORRECTNESS" />
+
+        <BugPattern abbrev="TEST" type="TEST_MISSING_FAIL" category="CORRECTNESS" />
+
+        <BugPattern abbrev="TEST" type="TEST_MISSING_JOIN" category="CORRECTNESS" />
+
+        <BugPattern abbrev="TEST" type="TEST_MISSING_DROP" category="CORRECTNESS" />
+
+        <BugPattern abbrev="TEST" type="TEST_UNEXPECTED_THROW" category="CORRECTNESS" />
+
+
 </FindbugsPlugin>

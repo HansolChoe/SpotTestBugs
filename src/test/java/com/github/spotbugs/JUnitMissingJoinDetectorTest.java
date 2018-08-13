@@ -13,10 +13,31 @@ import java.nio.file.Paths;
 import static edu.umd.cs.findbugs.test.CountMatcher.containsExactly;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class MavenTestClassNameDetectorTest {
+public class JUnitMissingJoinDetectorTest {
     @Rule
     public SpotBugsRule spotbugs = new SpotBugsRule();
 
+    @Test
+    public void testGoodCase() {
+        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "JUnitMissingJoinDetectorGoodCase.class");
+        BugCollection bugCollection = spotbugs.performAnalysis(path);
+        BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
+                .bugType("TEST_MISSING_JOIN").build();
+
+        assertThat(bugCollection, containsExactly(0, bugTypeMatcher));
+    }
+
+    @Test
+    public void testBadCase() {
+        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "JUnitMissingJoinDetectorBadCase.class");
+        BugCollection bugCollection = spotbugs.performAnalysis(path);
+        BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
+                .bugType("TEST_MISSING_JOIN").build();
+
+        assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
+    }
+}
+/*
     @Test
     public void testGoodCase() {
         Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "TestClassNameGoodCase.class");
@@ -24,37 +45,5 @@ public class MavenTestClassNameDetectorTest {
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
                 .bugType("TEST_CLASS_NAME_NOT_DEFAULT").build();
         assertThat(bugCollection, containsExactly(0, bugTypeMatcher));
-    }
-
-    @Test
-    public void testBadCase() {
-        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "TeztClassNameBadCase.class");
-        BugCollection bugCollection = spotbugs.performAnalysis(path);
-
-        BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("TEST_CLASS_NAME_NOT_DEFAULT").build();
-        assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
-    }
-}
-
-/*
-    @Test
-    public void testGoodCase() {
-        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "GoodCase.class");
-        BugCollection bugCollection = spotbugs.performAnalysis(path);
-
-        BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("MY_BUG").build();
-        assertThat(bugCollection, containsExactly(0, bugTypeMatcher));
-    }
-
-    @Test
-    public void testBadCase() {
-        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "BadCase.class");
-        BugCollection bugCollection = spotbugs.performAnalysis(path);
-
-        BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("MY_BUG").build();
-        assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
     }
  */

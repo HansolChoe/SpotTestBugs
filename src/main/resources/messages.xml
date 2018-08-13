@@ -16,6 +16,35 @@
   <Detector class="com.github.spotbugs.MavenTestClassNameDetector">
     <Details>
       Original detector to detect MY_BUG bug pattern.
+      MavenTestClassNameDetector
+    </Details>
+  </Detector>
+
+  <Detector class="com.github.spotbugs.JUnitMissingFailDetector">
+    <Details>
+      Original detector to detect MY_BUG bug pattern.
+      JUnitMissingFailDetector
+    </Details>
+  </Detector>
+
+  <Detector class="com.github.spotbugs.JUnitMissingJoinDetector">
+    <Details>
+      Original detector to detect MY_BUG bug pattern.
+      JUnitMissingJoinDetector
+    </Details>
+  </Detector>
+
+  <Detector class="com.github.spotbugs.DatabaseDropMissingDetector">
+    <Details>
+      Original detector to detect MY_BUG bug pattern.
+      DatabaseDropMissingDetector
+    </Details>
+  </Detector>
+
+  <Detector class="com.github.spotbugs.JUnitUnexpectedThrowDetector">
+    <Details>
+      Original detector to detect MY_BUG bug pattern.
+      DatabaseUnexpecetdThrowDetector
     </Details>
   </Detector>
 
@@ -32,6 +61,53 @@
   <!--</BugPattern>-->
 
   <BugPattern type="TEST_CLASS_NAME_NOT_DEFAULT">
+    <ShortDescription>Explain bug pattern shortly.</ShortDescription>
+    <LongDescription>
+      Explain existing problem in code, and how developer should improve their implementation.
+    </LongDescription>
+    <Details>
+      <![CDATA[
+<p>Explain existing problem in code, and how developer should improve their implementation.</p>
+]]>
+    </Details>
+  </BugPattern>
+
+  <BugPattern type="TEST_MISSING_FAIL">
+    <ShortDescription>Explain bug pattern shortly.</ShortDescription>
+    <LongDescription>
+      Explain existing problem in code, and how developer should improve their implementation.
+    </LongDescription>
+    <Details>
+      <![CDATA[
+<p>Explain existing problem in code, and how developer should improve their implementation.</p>
+]]>
+    </Details>
+  </BugPattern>
+  <BugPattern type="TEST_MISSING_JOIN">
+    <ShortDescription>Explain bug pattern shortly.</ShortDescription>
+    <LongDescription>
+      Explain existing problem in code, and how developer should improve their implementation.
+    </LongDescription>
+    <Details>
+      <![CDATA[
+<p>Explain existing problem in code, and how developer should improve their implementation.</p>
+]]>
+    </Details>
+  </BugPattern>
+
+  <BugPattern type="TEST_MISSING_DROP">
+    <ShortDescription>Explain bug pattern shortly.</ShortDescription>
+    <LongDescription>
+      Explain existing problem in code, and how developer should improve their implementation.
+    </LongDescription>
+    <Details>
+      <![CDATA[
+<p>Explain existing problem in code, and how developer should improve their implementation.</p>
+]]>
+    </Details>
+  </BugPattern>
+
+  <BugPattern type="TEST_UNEXPECTED_THROW">
     <ShortDescription>Explain bug pattern shortly.</ShortDescription>
     <LongDescription>
       Explain existing problem in code, and how developer should improve their implementation.
