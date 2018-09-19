@@ -44,7 +44,28 @@
   <Detector class="com.github.spotbugs.JUnitUnexpectedThrowDetector">
     <Details>
       Original detector to detect MY_BUG bug pattern.
-      DatabaseUnexpecetdThrowDetector
+      JUnitUnexpectedThrowDetector
+    </Details>
+  </Detector>
+
+  <Detector class="com.github.spotbugs.JUnitNoTearDownDetector">
+    <Details>
+      Original detector to detect MY_BUG bug pattern.
+      JUnitNoTearDownDetector
+    </Details>
+  </Detector>
+
+  <Detector class="com.github.spotbugs.JUnitPathSeparatorDetector">
+    <Details>
+      Original detector to detect MY_BUG bug pattern.
+      JUnitPathSeparatorDetector
+    </Details>
+  </Detector>
+
+  <Detector class="com.github.spotbugs.JUnitCloseStreamDetector">
+    <Details>
+      Original detector to detect MY_BUG bug pattern.
+      JUnitCloseStreamDetector
     </Details>
   </Detector>
 
@@ -95,7 +116,7 @@
     </Details>
   </BugPattern>
 
-  <BugPattern type="TEST_MISSING_DROP">
+  <BugPattern type="TEST_DB_DROP_MISSING">
     <ShortDescription>Explain bug pattern shortly.</ShortDescription>
     <LongDescription>
       Explain existing problem in code, and how developer should improve their implementation.
@@ -108,7 +129,42 @@
   </BugPattern>
 
   <BugPattern type="TEST_UNEXPECTED_THROW">
-    <ShortDescription>Explain bug pattern shortly.</ShortDescription>
+    <ShortDescription>ETEST_UNEXPECTED_THROW</ShortDescription>
+    <LongDescription>
+      Explain existing problem in code, and how developer should improve their implementation.
+    </LongDescription>
+    <Details>
+      <![CDATA[
+<p>Explain existing problem in code, and how developer should improve their implementation.</p>
+]]>
+    </Details>
+  </BugPattern>
+
+  <BugPattern type="TEST_NO_TEAR_DOWN">
+    <ShortDescription>TEST_NO_TEAR_DOWN</ShortDescription>
+    <LongDescription>
+      Explain existing problem in code, and how developer should improve their implementation.
+    </LongDescription>
+    <Details>
+      <![CDATA[
+<p>Explain existing problem in code, and how developer should improve their implementation.</p>
+]]>
+    </Details>
+  </BugPattern>
+  <BugPattern type="TEST_PATH_SEPARATOR">
+    <ShortDescription>TEST_PATH_SEPARATOR</ShortDescription>
+    <LongDescription>
+      Explain existing problem in code, and how developer should improve their implementation.
+    </LongDescription>
+    <Details>
+      <![CDATA[
+<p>Explain existing problem in code, and how developer should improve their implementation.</p>
+]]>
+    </Details>
+  </BugPattern>
+
+  <BugPattern type="TEST_STREAM_CLOSE">
+    <ShortDescription>TEST_STREAM_CLOSE</ShortDescription>
     <LongDescription>
       Explain existing problem in code, and how developer should improve their implementation.
     </LongDescription>
@@ -121,4 +177,6 @@
 
   <!--<BugCode abbrev="MY">My SpotBugs BugCode</BugCode>-->
   <BugCode abbrev="TEST">My Test BugCode</BugCode>
+  <!--<BugCode abbrev="MY">My SpotBugs BugCode</BugCode>-->
+  <!--<BugCode abbrev="TEST">My Test BugCode</BugCode>-->
 </MessageCollection>

@@ -13,35 +13,26 @@ import java.nio.file.Paths;
 import static edu.umd.cs.findbugs.test.CountMatcher.containsExactly;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class MavenTestClassNameDetectorTest {
+public class JUnitNoTearDownDetectorTest {
     @Rule
     public SpotBugsRule spotbugs = new SpotBugsRule();
 
     @Test
-    public void testGoodCase1() {
-        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "TestClassNameGoodCase.class");
+    public void testGoodCase() {
+        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "JUnitNoTearDownGoodTestCase.class");
         BugCollection bugCollection = spotbugs.performAnalysis(path);
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("TEST_CLASS_NAME_NOT_DEFAULT").build();
+                .bugType("TEST_NO_TEAR_DOWN").build();
         assertThat(bugCollection, containsExactly(0, bugTypeMatcher));
     }
 
     @Test
-    public void testBadCase1() {
-        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "SomeTestClass.class");
-        BugCollection bugCollection = spotbugs.performAnalysis(path);
-        BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("TEST_CLASS_NAME_NOT_DEFAULT").build();
-        assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
-    }
-
-    @Test
-    public void testBadCase2() {
-        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "TeztClassNameBadCase.class");
+    public void testBadCase() {
+        Path path = Paths.get("target/test-classes", "com.github.spotbugs".replace('.', '/'), "JUnitNoTearDownBadTestCase.class");
         BugCollection bugCollection = spotbugs.performAnalysis(path);
 
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("TEST_CLASS_NAME_NOT_DEFAULT").build();
+                .bugType("TEST_NO_TEAR_DOWN").build();
         assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
     }
 }

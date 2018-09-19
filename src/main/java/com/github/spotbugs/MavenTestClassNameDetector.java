@@ -41,16 +41,15 @@ public class MavenTestClassNameDetector extends BytecodeScanningDetector {
         JavaClass jClass = classContext.getJavaClass();
         XClass xClass = classContext.getXClass();
         try {
-            if (!isJunit3TestCase(xClass)) {
-                return;
-            }
-
             ClassDescriptor desc = xClass.getClassDescriptor();
             String fullClassNames[] = desc.getClassName().split("/");
             String className = fullClassNames[fullClassNames.length-1];
+
             if ((jClass.getAccessFlags() & Const.ACC_ABSTRACT) == 0) {
                 if (!isValidTestClassName(className)) {
-                    bugReporter.reportBug(new BugInstance(this, "TEST_CLASS_NAME_NOT_DEFAULT", LOW_PRIORITY).addClass(jClass));
+                    if (isJunit3TestCase(xClass) || doesClassNameContainTest(className)) {
+                        bugReporter.reportBug(new BugInstance(this, "TEST_CLASS_NAME_NOT_DEFAULT", LOW_PRIORITY).addClass(jClass));
+                    }
                 }
             }
         } catch (ClassNotFoundException cnfe) {
@@ -68,6 +67,16 @@ public class MavenTestClassNameDetector extends BytecodeScanningDetector {
                 className.matches(pattern2) ||
                 className.matches(pattern3) ||
                 className.matches(pattern4)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean doesClassNameContainTest(String className) {
+        String pattern = ".*Test.*";
+
+        if (className.matches(pattern)) {
             return true;
         } else {
             return false;

@@ -1,6 +1,7 @@
 package com.github.spotbugs;
 
 import edu.umd.cs.findbugs.BugAccumulator;
+import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -44,7 +45,9 @@ public class DatabaseDropMissingDetector extends OpcodeStackDetector {
         }
     }
 
+
     private boolean seenCreateQuery;
+    private int createQueryPC;
     private boolean seenDropQuery;
 
     @Override
@@ -67,7 +70,10 @@ public class DatabaseDropMissingDetector extends OpcodeStackDetector {
         super.visit(code);
 
         if(seenCreateQuery && !seenDropQuery) {
-            System.out.println("created table or sequence is not dropped");
+            BugInstance bug = new BugInstance(this, "TEST_DB_DROP_MISSING", NORMAL_PRIORITY)
+                    .addClass(getClassName())
+                    .addSourceLine(this, createQueryPC);
+            bugReporter.reportBug(bug);
         }
     }
 
@@ -76,13 +82,14 @@ public class DatabaseDropMissingDetector extends OpcodeStackDetector {
 
     @Override
     public void sawOpcode(int seen) {
-        printOpCode(seen);
+//        printOpCode(seen);
         if(seenLDC) {
             if (seen == Const.INVOKEINTERFACE
                     && "java.sql.Statement".equals(getDottedClassConstantOperand())
                     && "executeUpdate".equals(getNameConstantOperand())) {
                 if (operandString.toUpperCase().startsWith("CREATE")) {
                     seenCreateQuery = true;
+                    createQueryPC = getPC();
                 } else if (operandString.toUpperCase().startsWith("DROP")) {
                     seenDropQuery = true;
                 }
@@ -94,7 +101,7 @@ public class DatabaseDropMissingDetector extends OpcodeStackDetector {
             Constant c = getConstantRefOperand();
             if (c != null && c instanceof ConstantString) {
                 operandString = getStringConstantOperand();
-                System.out.println("operandString = " + operandString);
+//                System.out.println("operandString = " + operandString);
             }
         } else {
             seenLDC = false;

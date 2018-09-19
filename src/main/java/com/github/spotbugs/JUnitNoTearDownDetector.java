@@ -5,29 +5,21 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.XClass;
+import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.Global;
-import org.apache.bcel.Const;
-import org.apache.bcel.classfile.Code;
 import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.LineNumberTable;
-import org.apache.bcel.classfile.Method;
 
-public class JUnitMissingJoinDetector extends BytecodeScanningDetector {
+import java.util.List;
+
+public class JUnitNoTearDownDetector extends BytecodeScanningDetector {
 
     private final BugReporter bugReporter;
 
-    private int state;
-
-    public JUnitMissingJoinDetector(BugReporter bugReporter) {
+    public JUnitNoTearDownDetector(BugReporter bugReporter) {
         this.bugReporter = bugReporter;
     }
-
-    boolean directChildOfTestCase;
-
-
-    private boolean sawSuperCall;
 
     @Override
     public void visitClassContext(ClassContext classContext) {
@@ -35,7 +27,7 @@ public class JUnitMissingJoinDetector extends BytecodeScanningDetector {
             return;
         }
         System.out.println("---------");
-        System.out.println("JUnitMissingJoinDetector visitClassContext");
+        System.out.println("JUnitNoTearDownDetector visitClassContext");
         System.out.println("---------");
 
         JavaClass jClass = classContext.getJavaClass();
@@ -45,53 +37,22 @@ public class JUnitMissingJoinDetector extends BytecodeScanningDetector {
                 return;
             }
 
-            ClassDescriptor desc = xClass.getClassDescriptor();
-            String fullClassNames[] = desc.getClassName().split("/");
-            String className = fullClassNames[fullClassNames.length-1];
-
-            jClass.accept(this);
+            if(isSetUpImplemented(xClass)) {
+                if(!isTearDownImplemented(xClass)) {
+                    System.out.println("reached here");
+                    BugInstance bug = new BugInstance(
+                            this,
+                            "TEST_NO_TEAR_DOWN", NORMAL_PRIORITY)
+                            .addClass(jClass);
+                    bugReporter.reportBug(bug);
+                    System.out.println("bug reported");
+                }
+            }
         } catch (ClassNotFoundException cnfe) {
             bugReporter.reportMissingClass(cnfe);
         }
     }
 
-    private boolean seenThreadStart;
-    private boolean seenThreadJoin;
-    private int threadStartPC;
-
-    @Override
-    public void visit(Code code) {
-        String methodName = getMethodName();
-
-        System.out.println(methodName + ": visited");
-
-        //In JUnit3, Test Methods are starts with a word "test"
-        if(!methodName.startsWith("test")) {
-            return;
-        }
-        threadStartPC = -1;
-        super.visit(code);
-
-        if(seenThreadStart && !seenThreadJoin) {
-            BugInstance bug = new BugInstance(this, "TEST_MISSING_JOIN", NORMAL_PRIORITY)
-                    .addClass(getClassName())
-                    .addSourceLine(this, threadStartPC);
-            bugReporter.reportBug(bug);
-        }
-
-    }
-
-    @Override
-    public void sawOpcode(int seen) {
-        if((seen == Const.INVOKEVIRTUAL) && "start".equals(getNameConstantOperand())) {
-            // TODO 지금은 method name만 보고 start, join 만 확인하는데,
-            // parent class 가 Thread인지 확인하는 방법이 필요함..
-            seenThreadStart = true;
-            threadStartPC = getPC();
-        } else if ((seen == Const.INVOKEVIRTUAL) && "join".equals(getNameConstantOperand())) {
-            seenThreadJoin = true;
-        }
-    }
     /**
      * Check whether or not this detector should be enabled. The detector is
      * disabled if the TestCase class cannot be found (meaning we don't have
@@ -122,6 +83,48 @@ public class JUnitMissingJoinDetector extends BytecodeScanningDetector {
                 return false;
             }
             return isJunit3TestCase(sClass);
+        } catch (CheckedAnalysisException e) {
+            return false;
+        }
+    }
+
+    // Check whether setUp() is implemented
+    private boolean isSetUpImplemented(XClass xClass) {
+
+        List<? extends XMethod> methods = xClass.getXMethods();
+
+        for( XMethod m : methods) {
+            if(m.getMethodDescriptor().getName().equals("setUp")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Check whether tearDown() is implemented (check super classes too)
+    private boolean isTearDownImplemented(XClass xClass) {
+        List<? extends XMethod> methods = xClass.getXMethods();
+
+        System.out.println("xCLasss");
+
+        for( XMethod m : methods) {
+            if(m.getMethodDescriptor().getName().equals("tearDown")) {
+                return true;
+            }
+        }
+
+        try {
+            XClass sClass = xClass.getSuperclassDescriptor().getXClass();
+            if( sClass == null) {
+                return false;
+            }
+
+            if (sClass.getClassDescriptor().getClassName().equals("java/lang/Object")) {
+                return false;
+            }
+
+            return isTearDownImplemented(sClass);
         } catch (CheckedAnalysisException e) {
             return false;
         }
